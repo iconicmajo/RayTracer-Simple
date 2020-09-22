@@ -1,4 +1,5 @@
 #importar las funciones matematias
+from mathfunc import sub, dot, length
 
 class Sphere(object):
   def __init__(self, center,radius, material):
@@ -9,13 +10,13 @@ class Sphere(object):
   def ray_intersect(self, orig, direction):
     L = sub(self.center, orig)
     tca = dot(L, direction)
-    l = lenght(L)
-    d2 = 1**2 - tca**2
+    l = length(L)
+    d2 = l**2 - tca**2
 
-    if d2 >self.radius**2:
-      return False
+    if d2 > self.radius**2:
+      return None
 
-    thc = (self.radius **2 - d2 )**0.5
+    thc = (self.radius **2 - d2 )** 0.5
     t0  = tca -thc
     t1 = tca +thc
 
