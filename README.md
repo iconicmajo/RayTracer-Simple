@@ -1,12 +1,12 @@
 # RayTracer-Simple
 Segunda parte del curso gráficas por computadora
 
-##Objetivos:
+## Objetivos:
 
 - Que los estudiantes preparen el ambiente de desarrollo para su RayTracer Simple
 - Que los estudiantes puedan dibujar esferas con sus materiales difusos
 
-###Requerimientos:
+### Requerimientos:
 
 Para obtener la nota completa de ésta tarea deben entregar lo siguiente:
 
