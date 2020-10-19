@@ -8,9 +8,57 @@
 import struct 
 from collections import namedtuple
 
+class V3(object):
+  def __init__(self, x, y, z):
+    self.x = x
+    self.y = y
+    self.z = z
 
-V2 = namedtuple('Vertex2', ['x', 'y'])
-V3 = namedtuple('Vertex3', ['x', 'y', 'z'])
+  def __repr__(self):
+    return "V3(%s, %s, %s)" % (self.x, self.y, self.z)
+
+class V2(object):
+  def __init__(self, x, y):
+    self.x = x
+    self.y = y
+
+  def __repr__(self):
+    return "V2(%s, %s)" % (self.x, self.y)
+
+#V2 = namedtuple('Vertex2', ['x', 'y'])
+#V3 = namedtuple('Vertex3', ['x', 'y', 'z'])
+
+class color(object):
+    def __init__(self, r,g,b):
+        self.r = r
+        self.g = g 
+        self.b = b
+
+    def __add__(self, otherColor):
+        r = self.r + otherColor.r
+        g = self.g + otherColor.g
+        b = self.b + otherColor.b
+
+        return color(r, g, b)
+
+
+    def __mul__(self, otherColor):
+        r = self.r * otherColor
+        g = self.g * otherColor
+        b = self.b * otherColor
+
+        return color(r, g, b)
+
+    def __repr__(self):
+        return "color (%s, %s, %s)" % (self.r, self.g, self.b)
+
+    def toBytes(self):
+        self.r = int(max(min(self.r, 255), 0))
+        self.g = int(max(min(self.g, 255), 0))
+        self.b = int(max(min(self.b, 255), 0))
+        return bytes([self.b, self.g, self.r])
+    
+    __rmul__ = __mul__
 
 def MM(a,b):
     c = []
@@ -30,8 +78,8 @@ def word(c):
     return struct.pack('=h', c)
 def dword(c):
     return struct.pack('=l', c)
-def color(r, g, b):
-    return bytes([b, g, r])
+#def color(r, g, b):
+#    return bytes([b, g, r])
 
 def sum(v0, v1):
     """
@@ -151,3 +199,29 @@ def writebmp(self, filename, width, height, framebuffer):
             for y in range(self.height):
                 f.write(self.framebuffer[y][x])
         f.close()
+
+
+def reflect(I, N):
+    Lm = mul(I, -1)
+    n = mul(N, 2 * dot(Lm, N))
+    return norm(sub(Lm, n))
+
+def refract(I, N, refractive_index):  # Implementation of Snell's law
+    cosi = -max(-1, min(1, dot(I, N)))
+    etai = 1
+    etat = refractive_index
+
+    if cosi < 0:  # if the ray is inside the object, swap the indices and invert the normal to get the correct result
+      cosi = -cosi
+      etai, etat = etat, etai
+      N = mul(N, -1)
+
+    eta = etai/etat
+    k = 1 - eta**2 * (1 - cosi**2)
+    if k < 0:
+      return V3(1, 0, 0)
+
+    return norm(sum(
+      mul(I, eta),
+      mul(N, (eta * cosi - k**(1/2)))
+    ))
